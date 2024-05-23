@@ -12,10 +12,6 @@ import os
 #from datetime import datetime, timedelta
 
 
-#def tabela(matriz_inicial):
-    #from tabulate import tabulate
-    #tabela = tabulate(matriz_inicial, headers="firstrow", tablefmt="grid")
-    #return tabelaprint("<10) | (:<20) | (:<10) | (:<15) | (1<15) | (:<15)".format("ID", "Nome do Produto", "Preço", "Quantidade", "Categoria", "Descrição"))
 
 #limpa o terminal
 def limpar_terminal():
@@ -27,8 +23,9 @@ def matriz_inicial():
     with open("DadosDengue.csv","r",) as arquivo_csv:
         leitor_csv=csv.reader(arquivo_csv,delimiter=",")
         lista_csv=[]
-        for item in leitor_csv:
-            lista_csv.append(item)
+        for i, item in enumerate(leitor_csv):
+            if i != 0:
+                lista_csv.append(item)
         return lista_csv
 
 #transforma o arquivo csv em matriz
@@ -67,16 +64,17 @@ def busca_intervalo(matriz):
     data2=input("Digite a segunda data")
 
 def porcentagem(matriz):
-    for linha in matriz:
-        casos_suspeitos=int(sum(int(linha[3])))
-        casos_negativos=int(sum(int(linha[4])))
-        casos_positivos=int(sum(int(linha[5])))
-        casos_notificados=casos_negativos+casos_positivos+casos_suspeitos
-        porcentagem_positivos=(100*casos_positivos)/casos_notificados
-        porcentagem_negativos=(100*casos_negativos)/casos_notificados
-        print('|------INDICADORES DE PREVALÊNCIA------|')
-        print('Positivos:',porcentagem_positivos,'Negativos:', porcentagem_negativos) 
-    
+    cs = [int(linha[3]) for linha in matriz]
+    cn = [int(linha[3]) for linha in matriz]
+    cp = [int(linha[3]) for linha in matriz]
+    soma_cs=sum(cs) 
+    soma_cn=sum(cn)
+    soma_cp=sum(cp)
+    total=soma_cp+soma_cn+soma_cs
+    porcentagem_positivos=soma_cp*(100/total)
+    porcentagem_negativos=soma_cn*(100/total)
+    print('|------INDICADORES DE PREVALÊNCIA------|')
+    print(f'Positivos:',"%.1f" %porcentagem_positivos,'%''Negativos:', "%.1f" %porcentagem_negativos,'%') 
      
 #acrescenta uma entrada no índice 0 da matriz,referente a data
 def acrescentar_data(matriz):
