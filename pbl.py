@@ -60,6 +60,36 @@ def converter(matriz):
     casos_pos = [int(linha[5]) for linha in matriz]
     return casos_sus,casos_neg,casos_sus
 
+
+# Exibe porcentagem de casos positivos e negativos em relação ao total
+def porcentagem_geral(matriz):
+    linha=última_data(matriz)
+
+    casos_sus,casos_neg,casos_pos=converter(matriz)
+    soma_cs=sum(casos_sus) 
+    soma_cn=sum(casos_neg)
+    soma_cp=sum(casos_pos)
+
+    total=soma_cp+soma_cn+soma_cs
+    porcentagem_positivos=soma_cp*(100/total)
+    porcentagem_negativos=soma_cn*(100/total)
+
+    print('|------INDICADORES DE PREVALÊNCIA------|')
+    print(f'Positivos: {"%.1f" % porcentagem_positivos}%, Negativos: {"%.1f" % porcentagem_negativos}%')
+
+# Exibe porcentagem de casos positivos e negativos em relação ao total de habiitantes por bairro
+def porcentagem_bairro(matriz):
+    casos_pos, casos_neg, casos_sus = converter(matriz)
+    bairro = input("Por favor, informe o bairro que deseja verificar:\n")
+    if linha[1]=bairro:
+        hab=int(linha[2])
+    for linha in matriz:
+        if linha[1]==bairro:
+            porcentagem_positivos=casos_pos*(100/hab)
+            porcentagem_negativos=casos_neg*(100/hab)
+        print('|------INDICADORES DE PREVALÊNCIA------|')
+        print(f'Positivos: {"%.1f" % porcentagem_positivos}%, Negativos: {"%.1f" % porcentagem_negativos}%')
+
             
 #===============================================SEÇÃO DE PESQUISA=============================================================
 
@@ -107,34 +137,7 @@ def busca_intervalo(matriz):
                 "NEGADOS:", linha[4], 
                 "CONFIRMADOS:", linha[5]))
 
-# Exibe porcentagem de casos positivos e negativos em relação ao total
-def porcentagem_geral(matriz):
 
-    linha=última_data(matriz)
-
-    casos_sus,casos_neg,casos_pos=converter(matriz)
-    soma_cs=sum(casos_sus) 
-    soma_cn=sum(casos_neg)
-    soma_cp=sum(casos_pos)
-
-    total=soma_cp+soma_cn+soma_cs
-    porcentagem_positivos=soma_cp*(100/total)
-    porcentagem_negativos=soma_cn*(100/total)
-
-    print('|------INDICADORES DE PREVALÊNCIA------|')
-    print(f'Positivos: {"%.1f" % porcentagem_positivos}%, Negativos: {"%.1f" % porcentagem_negativos}%')
-
-# Exibe porcentagem de casos positivos e negativos em relação ao total de habiitantes por bairro
-def porcentagem_bairro(matriz):
-    casos_pos, casos_neg, casos_sus = converter(matriz)
-    bairro = input("Por favor, informe o bairro que deseja verificar:\n")
-    for linha in matriz:
-        if linha[1]==bairro:
-            hab=linha[2]
-            porcentagem_positivos=casos_pos*(100/hab)
-            porcentagem_negativos=casos_neg*(100/hab)
-        print('|------INDICADORES DE PREVALÊNCIA------|')
-        print(f'Positivos: {"%.1f" % porcentagem_positivos}%, Negativos: {"%.1f" % porcentagem_negativos}%')
 
 #===============================================SEÇÃO DE EDIÇÃO=============================================================
 
