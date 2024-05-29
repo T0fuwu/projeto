@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from tkinter import filedialog as fd
 
 
+                      
 #filedialog.askopenfilename (title = “Dados_Dengue.csv”, filetypes = ((“file_type”, ”*.csv”), (“all files”, ”*. *”)))
 # filename=input('Nome do arquivo')    
 # filename = fd.askopenfilename()
@@ -24,10 +25,11 @@ def matriz_inicial():
     with open("DadosDengue.csv","r",) as arquivo_csv:
         leitor_csv=csv.reader(arquivo_csv,delimiter=",")
         lista_csv=[]
-        for item in leitor_csv:
-            lista_csv.append(item)
+        for linha in leitor_csv:
+            lista_csv.append(linha)
         lista_csv.pop(0) # Remove cabeçalho
         return lista_csv
+    
     
 #Imprime a matriz
 def adicionar(matriz):
@@ -39,7 +41,14 @@ def adicionar(matriz):
     "SUSPEITOS:", linha[3], 
     "NEGADOS:", linha[4], 
     "CONFIRMADOS:", linha[5]))
-        
+
+#Cria um arquivo csv
+def escrever_csv():
+    molde_arquivo = ['Data', 'Bairros', 'Habitantes', 'Casos Suspeitos', 'Casos Negativos', 'Casos Confirmados']
+    with open('DadosDengue', 'w', newline='', encoding='utf-8') as arquivo_csv:
+        escritor_csv = csv.writer(arquivo_csv)
+        escritor_csv.writerow(molde_arquivo)
+
 #Limpa o terminal 
 def limpa_terminal():
     os.system('cls') or None
@@ -61,34 +70,31 @@ def converter(matriz):
     return casos_sus,casos_neg,casos_sus
 
 
-# Exibe porcentagem de casos positivos e negativos em relação ao total
 def porcentagem_geral(matriz):
-    linha=última_data(matriz)
+            casos_pos, casos_neg, casos_sus = converter(matriz)
+            soma_cs=sum(casos_sus) 
+            soma_cn=sum(casos_neg)
+            soma_cp=sum(casos_pos)
+            total=soma_cp+soma_cn+soma_cs
+            porcentagem_positivos=soma_cp*(100/total)
+            porcentagem_negativos=soma_cn*(100/total)
+            for linha in matriz:
+                if linha[0] == matriz[-1][0]:
+                    print('|------INDICADORES DE PREVALÊNCIA------|')
+                    print(f'Positivos: {"%.1f" % porcentagem_positivos}%, Negativos: {"%.1f" % porcentagem_negativos}%')
+                    return linha 
 
-    casos_sus,casos_neg,casos_pos=converter(matriz)
-    soma_cs=sum(casos_sus) 
-    soma_cn=sum(casos_neg)
-    soma_cp=sum(casos_pos)
-
-    total=soma_cp+soma_cn+soma_cs
-    porcentagem_positivos=soma_cp*(100/total)
-    porcentagem_negativos=soma_cn*(100/total)
-
-    print('|------INDICADORES DE PREVALÊNCIA------|')
-    print(f'Positivos: {"%.1f" % porcentagem_positivos}%, Negativos: {"%.1f" % porcentagem_negativos}%')
 
 # Exibe porcentagem de casos positivos e negativos em relação ao total de habiitantes por bairro
 def porcentagem_bairro(matriz):
-    casos_pos, casos_neg, casos_sus = converter(matriz)
     bairro = input("Por favor, informe o bairro que deseja verificar:\n")
-    if linha[1]=bairro:
-        hab=int(linha[2])
-    for linha in matriz:
-        if linha[1]==bairro:
-            porcentagem_positivos=casos_pos*(100/hab)
-            porcentagem_negativos=casos_neg*(100/hab)
-        print('|------INDICADORES DE PREVALÊNCIA------|')
-        print(f'Positivos: {"%.1f" % porcentagem_positivos}%, Negativos: {"%.1f" % porcentagem_negativos}%')
+    linha=matriz_inicial()
+    casos_neg,casos_pos,casos_sus = converter(matriz)
+    hab=([int(linha(2))]for linha in matriz if linha[linha[1]]==bairro)
+    porcentagem_positivos=casos_pos*(100/hab)
+    porcentagem_negativos=casos_neg*(100/hab)
+    print('|------INDICADORES DE PREVALÊNCIA------|')
+    print(f'Positivos: {"%.1f" % porcentagem_positivos}%, Negativos: {"%.1f" % porcentagem_negativos}%')
 
             
 #===============================================SEÇÃO DE PESQUISA=============================================================
@@ -137,11 +143,7 @@ def busca_intervalo(matriz):
                 "NEGADOS:", linha[4], 
                 "CONFIRMADOS:", linha[5]))
 
-
-
 #===============================================SEÇÃO DE EDIÇÃO=============================================================
-
-
 #solicita novos casos positivos e substitui no índice 5 da matriz,referente aos positivos
 def alterar_positivados(matriz):
     casos_pos,casos_sus = converter(matriz)
